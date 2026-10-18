@@ -48,12 +48,18 @@ int main(void) {
 
     glViewport(0, 0, 800, 600);
 
-    float vertices[] = {
-        //   x          y         z         pad
-        -0.5f, -0.5f, 0.0f, 0.0f,
+    
+    GLfloat vertices[] = {
+        //  x          y         z         pad
+        0.5f,  0.5f, 0.0f, 0.0f,
         0.5f, -0.5f, 0.0f, 0.0f,
-        0.0f,  0.5f, 0.0f, 0.0f
+        -0.5f, -0.5f, 0.0f, 0.0f,
+        -0.5f,  0.5f, 0.0f, 0.0f
     };
+    GLuint indices[] = {
+        0, 1, 3,
+        1, 2, 3
+    }; 
 
     GLuint emptyVao = 0;
     glGenVertexArrays(1, &emptyVao);
@@ -61,6 +67,10 @@ int main(void) {
     GLuint vertexBuffer = 0;
     glCreateBuffers(1, &vertexBuffer);
     glNamedBufferStorage(vertexBuffer, sizeof(vertices), (const void*)vertices, GL_DYNAMIC_STORAGE_BIT);
+
+    GLuint indexBuffer = 0;
+    glCreateBuffers(1, &indexBuffer);
+    glNamedBufferStorage(indexBuffer, sizeof(indices), (const void*)indices, GL_DYNAMIC_STORAGE_BIT);
 
     shader simpleShader;
     simpleShader.loadFromFile("../assets/shaders/shader.vert", "../assets/shaders/shader.frag");
@@ -79,9 +89,11 @@ int main(void) {
         glClear(GL_COLOR_BUFFER_BIT);
 
         glBindVertexArray(emptyVao);
+
         glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, vertexBuffer);
+        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, indexBuffer);
         simpleShader.use();
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
         
         SDL_GL_SwapWindow(window);
     }
