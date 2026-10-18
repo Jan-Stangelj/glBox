@@ -19,8 +19,12 @@ vec2 getUV(vertex v) {
     return vec2(v.uv[0], v.uv[1]);
 }
 
+layout(location = 0) out vec2 uvOut;
+
 void main() {
     vertex v = vertices[indices[gl_VertexID]];
 
     gl_Position = vec4(getPosition(v), 1.0);
+
+    uvOut = getUV(v);
 }

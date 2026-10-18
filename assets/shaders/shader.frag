@@ -1,7 +1,11 @@
 #version 460 core
 
-out vec4 FragColor;
+layout(location = 0) in vec2 uvIn;
+
+layout(location = 0) out vec4 color;
+
+layout(location = 0) uniform sampler2D texture0;
 
 void main() {
-    FragColor = vec4(1.0, 0.5, 0.2, 1.0);
+    color = vec4(texture(texture0, uvIn).rgb, 1.0);
 }

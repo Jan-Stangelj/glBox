@@ -1,6 +1,8 @@
 #include "glad/glad.h"
 #include "SDL3/SDL.h"
 
+#include "stb/stb_image.h"
+
 #include "shader.hpp"
 
 #include <iostream>
@@ -72,6 +74,26 @@ int main(void) {
     glCreateBuffers(1, &indexBuffer);
     glNamedBufferStorage(indexBuffer, sizeof(indices), (const void*)indices, GL_DYNAMIC_STORAGE_BIT);
 
+    GLuint texture;
+    glCreateTextures(GL_TEXTURE_2D, 1, &texture);
+
+    glTextureParameteri(texture, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTextureParameteri(texture, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTextureParameteri(texture, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTextureParameteri(texture, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    int width, height, nrChannels;
+    unsigned char *data = stbi_load("../assets/textures/red_brick.png", &width, &height, &nrChannels, 3);
+    if (data) {
+        glTextureStorage2D(texture, 1 + static_cast<GLint>(std::log2(std::max(width, height))), GL_RGB8, width, height);
+        glTextureSubImage2D(texture, 0, 0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glGenerateTextureMipmap(texture);
+    }
+    else {
+        std::cout << "Failed to load texture\n";
+    }
+    stbi_image_free(data);
+
     shader simpleShader;
     simpleShader.loadFromFile("../assets/shaders/shader.vert", "../assets/shaders/shader.frag");
 
@@ -92,6 +114,7 @@ int main(void) {
 
         glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, vertexBuffer);
         glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, indexBuffer);
+        glBindTextureUnit(0, texture);
         simpleShader.use();
         glDrawArrays(GL_TRIANGLES, 0, 6);
         
