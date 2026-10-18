@@ -1,12 +1,26 @@
 #version 460 core
 
+struct vertex {
+    float position[3];
+    float uv[2];
+};
+
 layout(binding = 0, std430) readonly buffer verticesBuffer {
-    vec4 vertices[];
+    vertex vertices[];
 };
 layout(binding = 1, std430) readonly buffer indicesBuffer {
     uint indices[];
 };
 
+vec3 getPosition(vertex v) {
+    return vec3(v.position[0], v.position[1], v.position[2]);
+}
+vec2 getUV(vertex v) {
+    return vec2(v.uv[0], v.uv[1]);
+}
+
 void main() {
-    gl_Position = vec4(vertices[indices[gl_VertexID]].xyz, 1.0);
+    vertex v = vertices[indices[gl_VertexID]];
+
+    gl_Position = vec4(getPosition(v), 1.0);
 }
