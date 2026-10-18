@@ -17,6 +17,7 @@ set(SDL_UNINSTALL OFF CACHE BOOL "" FORCE)
 add_subdirectory("vendor/sdl" EXCLUDE_FROM_ALL)
 add_subdirectory("vendor/glm")
 add_subdirectory("vendor/glad")
+add_subdirectory("vendor/stb")
 
 file(GLOB_RECURSE "SOURCES" CONFIGURE_DEPENDS "src/*.cpp")
 add_executable("glBox" "${SOURCES}")
@@ -32,4 +33,4 @@ endif()
 
 target_include_directories("glBox" PRIVATE ${PROJECT_SOURCE_DIR}/include)
 
-target_link_libraries("glBox" PRIVATE SDL3::SDL3-static glm glad)
+target_link_libraries("glBox" PRIVATE SDL3::SDL3-static glm glad stb)
