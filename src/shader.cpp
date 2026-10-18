@@ -38,7 +38,7 @@ bool shader::loadFromFile(const char* vertexPath, const char* fragmentPath) {
 
     } catch (std::ifstream::failure& e) {
 
-        std::cerr << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ\n";
+        std::cout << "Warning: Failed to read shader files:\n- Vertex: " << vertexPath << "\n- Fragment: " << fragmentPath << '\n';
         return false;
     }
 
@@ -47,7 +47,7 @@ bool shader::loadFromFile(const char* vertexPath, const char* fragmentPath) {
 
 bool shader::loadFromText(const char* vertexCode, const char* fragmentCode) {
     if (vertexCode == nullptr || fragmentCode == nullptr) {
-        std::cerr << "ERROR::SHADER::NO::INPUT::PROVIDED\n";
+        std::cout << "Warning: No shader source code provided\n";
         return false;
     }
 
@@ -64,7 +64,7 @@ bool shader::loadFromText(const char* vertexCode, const char* fragmentCode) {
     glGetShaderiv(vertex, GL_COMPILE_STATUS, &success);
     if (!success) {
         glGetShaderInfoLog(vertex, 512, nullptr, infoLog);
-        std::cerr << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << "\n";
+        std::cerr << "Error: Vertex shader compilation failed: " << infoLog << "\n";
         glDeleteShader(vertex);
         return false;
     }
@@ -76,7 +76,7 @@ bool shader::loadFromText(const char* vertexCode, const char* fragmentCode) {
     glGetShaderiv(fragment, GL_COMPILE_STATUS, &success);
     if (!success) {
         glGetShaderInfoLog(fragment, 512, nullptr, infoLog);
-        std::cerr << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << "\n";
+        std::cerr << "Error: Fragment shader compilation failed: " << infoLog << "\n";
         glDeleteShader(vertex);
         glDeleteShader(fragment);
         return false;
@@ -90,7 +90,7 @@ bool shader::loadFromText(const char* vertexCode, const char* fragmentCode) {
     glGetProgramiv(program, GL_LINK_STATUS, &success);
     if (!success) {
         glGetProgramInfoLog(program, 512, nullptr, infoLog);
-        std::cerr << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << "\n";
+        std::cerr << "Error: Linking shader programs failed: " << infoLog << "\n";
         glDeleteShader(vertex);
         glDeleteShader(fragment);
         glDeleteProgram(program);

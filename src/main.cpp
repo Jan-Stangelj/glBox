@@ -84,7 +84,7 @@ int main(void) {
 
     int width, height, nrChannels;
     unsigned char *data = stbi_load("../assets/textures/red_brick.png", &width, &height, &nrChannels, 3);
-    if (data) {
+    if (data != nullptr) {
         glTextureStorage2D(texture, 1 + static_cast<GLint>(std::log2(std::max(width, height))), GL_RGB8, width, height);
         glTextureSubImage2D(texture, 0, 0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, data);
         glGenerateTextureMipmap(texture);
