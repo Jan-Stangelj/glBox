@@ -1,7 +1,6 @@
 #pragma once
 
-#include <glad/glad.h>
-#include <glm/glm.hpp>
+#include "glad/glad.h"
 
 class shader {
 public:
@@ -13,15 +12,15 @@ public:
     shader& operator=(const shader&) = delete;
 
     shader(shader&& other) noexcept {
-        m_ID = other.m_ID;
-        other.m_ID = 0;
+        m_id = other.m_id;
+        other.m_id = 0;
     }
     shader& operator=(shader&& other) {
         if (this != &other) {
-            if (m_ID)
-                glDeleteProgram(m_ID);
-            m_ID = other.m_ID;
-            other.m_ID = 0;
+            if (m_id)
+                glDeleteProgram(m_id);
+            m_id = other.m_id;
+            other.m_id = 0;
         }
         return *this;
     }
@@ -29,10 +28,10 @@ public:
     bool loadFromFile(const char* vertexPath, const char* fragmentPath);
     bool loadFromText(const char* vertexCode, const char* fragmentCode);
 
-    void use() const;
+    bool use() const;
 
 private:
 
-    GLuint m_ID = 0;
+    GLuint m_id = 0;
 
 };

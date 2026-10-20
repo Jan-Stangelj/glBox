@@ -4,8 +4,10 @@
 #include "stb/stb_image.h"
 
 #include "shader.hpp"
+#include "ssbo.hpp"
 
 #include <iostream>
+#include <cmath>
 
 void APIENTRY glDebugOutput(GLenum source, GLenum type, unsigned int id, GLenum severity, GLsizei length, const char *message, const void *userParam);
 
@@ -66,13 +68,11 @@ int main(void) {
     GLuint emptyVao = 0;
     glGenVertexArrays(1, &emptyVao);
 
-    GLuint vertexBuffer = 0;
-    glCreateBuffers(1, &vertexBuffer);
-    glNamedBufferStorage(vertexBuffer, sizeof(vertices), (const void*)vertices, GL_DYNAMIC_STORAGE_BIT);
+    ssbo vertexBuffer;
+    vertexBuffer.create(sizeof(vertices), vertices);
 
-    GLuint indexBuffer = 0;
-    glCreateBuffers(1, &indexBuffer);
-    glNamedBufferStorage(indexBuffer, sizeof(indices), (const void*)indices, GL_DYNAMIC_STORAGE_BIT);
+    ssbo indexBuffer;
+    indexBuffer.create(sizeof(indices), indices);
 
     GLuint texture;
     glCreateTextures(GL_TEXTURE_2D, 1, &texture);
@@ -90,7 +90,7 @@ int main(void) {
         glGenerateTextureMipmap(texture);
     }
     else {
-        std::cout << "Failed to load texture\n";
+        std::cout << "ERROR: Failed to load texture\n";
     }
     stbi_image_free(data);
 
@@ -112,8 +112,8 @@ int main(void) {
 
         glBindVertexArray(emptyVao);
 
-        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, vertexBuffer);
-        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, indexBuffer);
+        vertexBuffer.bind(0);
+        indexBuffer.bind(1);
         glBindTextureUnit(0, texture);
         simpleShader.use();
         glDrawArrays(GL_TRIANGLES, 0, 6);

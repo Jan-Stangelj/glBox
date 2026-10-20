@@ -1,5 +1,5 @@
 RAII abstraction for ogl objects:
-- ssbo
+- ssbo -> DONE
 - texture2d with bindless support
 - shaders -> DONE
 - compute shaders

@@ -6,7 +6,7 @@
 #include <fstream>
 
 shader::~shader() {
-    if (m_ID) glDeleteProgram(m_ID);
+    if (m_id) glDeleteProgram(m_id);
 }
 
 bool shader::loadFromFile(const char* vertexPath, const char* fragmentPath) {
@@ -64,7 +64,7 @@ bool shader::loadFromText(const char* vertexCode, const char* fragmentCode) {
     glGetShaderiv(vertex, GL_COMPILE_STATUS, &success);
     if (!success) {
         glGetShaderInfoLog(vertex, 512, nullptr, infoLog);
-        std::cerr << "ERROR: Vertex shader compilation failed: " << infoLog << "\n";
+        std::cerr << "ERROR: Vertex shader compilation failed, aborting: " << infoLog << "\n";
         glDeleteShader(vertex);
         return false;
     }
@@ -76,7 +76,7 @@ bool shader::loadFromText(const char* vertexCode, const char* fragmentCode) {
     glGetShaderiv(fragment, GL_COMPILE_STATUS, &success);
     if (!success) {
         glGetShaderInfoLog(fragment, 512, nullptr, infoLog);
-        std::cerr << "ERROR: Fragment shader compilation failed: " << infoLog << "\n";
+        std::cerr << "ERROR: Fragment shader compilation failed, aborting: " << infoLog << "\n";
         glDeleteShader(vertex);
         glDeleteShader(fragment);
         return false;
@@ -90,18 +90,18 @@ bool shader::loadFromText(const char* vertexCode, const char* fragmentCode) {
     glGetProgramiv(program, GL_LINK_STATUS, &success);
     if (!success) {
         glGetProgramInfoLog(program, 512, nullptr, infoLog);
-        std::cerr << "ERROR: Linking shader programs failed: " << infoLog << "\n";
+        std::cerr << "ERROR: Linking shader programs failed, aborting: " << infoLog << "\n";
         glDeleteShader(vertex);
         glDeleteShader(fragment);
         glDeleteProgram(program);
         return false;
     }
 
-    if (m_ID != 0) {
+    if (m_id != 0) {
         std::cout << "WARNING: Shader already created, overwriting.\n";
-        glDeleteProgram(m_ID);
+        glDeleteProgram(m_id);
     }
-    m_ID = program;
+    m_id = program;
 
     glDeleteShader(vertex);
     glDeleteShader(fragment);
@@ -109,6 +109,12 @@ bool shader::loadFromText(const char* vertexCode, const char* fragmentCode) {
     return true;
 }
 
-void shader::use() const {
-    if (m_ID) glUseProgram(m_ID);
+bool shader::use() const {
+    if (m_id == 0) {
+        std::cout << "NOTE: Bind called with no shader present. Done nothing.\n";
+        return false;
+    }
+    
+    glUseProgram(m_id);
+    return true;
 }
