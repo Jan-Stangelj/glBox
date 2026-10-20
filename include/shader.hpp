@@ -11,19 +11,8 @@ public:
     shader(const shader&) = delete;
     shader& operator=(const shader&) = delete;
 
-    shader(shader&& other) noexcept {
-        m_id = other.m_id;
-        other.m_id = 0;
-    }
-    shader& operator=(shader&& other) {
-        if (this != &other) {
-            if (m_id)
-                glDeleteProgram(m_id);
-            m_id = other.m_id;
-            other.m_id = 0;
-        }
-        return *this;
-    }
+    shader(shader&& other) noexcept;
+    shader& operator=(shader&& other) noexcept;
 
     bool loadFromFile(const char* vertexPath, const char* fragmentPath);
     bool loadFromText(const char* vertexCode, const char* fragmentCode);

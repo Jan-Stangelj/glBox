@@ -9,6 +9,20 @@ shader::~shader() {
     if (m_id) glDeleteProgram(m_id);
 }
 
+shader::shader(shader&& other) noexcept {
+    m_id = other.m_id;
+    other.m_id = 0;
+}
+shader& shader::operator=(shader&& other) noexcept {
+    if (this != &other) {
+        if (m_id)
+            glDeleteProgram(m_id);
+        m_id = other.m_id;
+        other.m_id = 0;
+    }
+    return *this;
+}
+
 bool shader::loadFromFile(const char* vertexPath, const char* fragmentPath) {
 
     std::string vertexCode;
